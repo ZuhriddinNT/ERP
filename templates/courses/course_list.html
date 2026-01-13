@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+
+{% block page_title %}My Courses{% endblock %}
+
+{% block authenticated_content %}
+<div class="mb-8 flex items-center justify-between">
+    <div>
+        <h2 class="text-3xl font-bold mb-2">My Courses</h2>
+        <p class="text-gray-custom">
+            {% if user.is_teacher %}
+            Manage and track your teaching courses
+            {% else %}
+            View your enrolled courses and track progress
+            {% endif %}
+        </p>
+    </div>
+    {% if user.is_teacher %}
+    <a href="{% url 'course_create' %}" class="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition">
+        + Add Course
+    </a>
+    {% endif %}
+</div>
+
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+    {% for course in courses %}
+    <div class="bg-dark-card border border-dark rounded-xl p-6 hover:border-blue-600 transition">
+        <div class="flex items-start justify-between mb-4">
+            <div class="text-4xl">{{ course.icon }}</div>
+            <span class="px-3 py-1 rounded-full text-xs font-medium bg-green-600 bg-opacity-20 text-green-500">
+                {{ course.get_status_display }}
+            </span>
+        </div>
+
+        <h3 class="text-xl font-semibold mb-2">{{ course.title }}</h3>
+        <p class="text-gray-custom text-sm mb-4">{{ course.code }}</p>
+
+        <div class="flex items-center justify-between mb-4">
+            <div class="flex items-center gap-2">
+                <svg class="w-4 h-4 text-gray-custom" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                </svg>
+                <span class="text-sm text-gray-custom">{{ course.student_count }} students</span>
+            </div>
+
+            <div class="flex items-center gap-1">
+                <svg class="w-4 h-4 text-yellow-500" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                </svg>
+                <span class="text-sm font-semibold">{{ course.average_rating|default:"N/A" }}</span>
+            </div>
+        </div>
+
+        {% if user.is_teacher %}
+        <p class="text-sm text-gray-custom mb-4 truncate">{{ course.description|truncatewords:15 }}</p>
+        {% else %}
+        {% with enrollment=course.enrollments.first %}
+        {% if enrollment %}
+        <div class="mb-4">
+            <div class="flex justify-between text-sm mb-2">
+                <span class="text-gray-custom">Progress</span>
+                <span class="font-semibold">{{ enrollment.progress }}%</span>
+            </div>
+            <div class="w-full bg-dark rounded-full h-2">
+                <div class="bg-gradient-to-r from-blue-500 to-blue-600 h-2 rounded-full progress-bar" style="width: {{ enrollment.progress }}%"></div>
+            </div>
+        </div>
+        {% endif %}
+        {% endwith %}
+        {% endif %}
+
+        <a href="{% url 'course_detail' course.id %}" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-2 rounded-lg font-medium transition">
+            View Details
+        </a>
+    </div>
+    {% empty %}
+    <div class="col-span-full text-center py-16">
+        <svg class="w-16 h-16 mx-auto mb-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>
+        <h3 class="text-xl font-semibold mb-2">No courses yet</h3>
+        <p class="text-gray-custom mb-6">
+            {% if user.is_teacher %}
+            Start by creating your first course
+            {% else %}
+            Enroll in a course to get started
+            {% endif %}
+        </p>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

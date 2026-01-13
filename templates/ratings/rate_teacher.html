@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+
+{% block page_title %}Rate Teacher{% endblock %}
+
+{% block content %}
+<div class="max-w-3xl mx-auto">
+    <div class="bg-dark-card border border-dark rounded-xl p-8">
+        <div class="mb-8">
+            <h2 class="text-3xl font-bold mb-2">Rate Your Teacher</h2>
+            <p class="text-gray-custom">Share your feedback for {{ course.teacher.get_full_name|default:course.teacher.username }}</p>
+        </div>
+        
+        <!-- Course Info -->
+        <div class="bg-dark border border-dark rounded-lg p-6 mb-8">
+            <div class="flex items-center gap-4">
+                <div class="text-4xl">{{ course.icon }}</div>
+                <div>
+                    <h3 class="text-xl font-semibold">{{ course.title }}</h3>
+                    <p class="text-gray-custom">{{ course.code }}</p>
+                </div>
+            </div>
+        </div>
+        
+        <form method="POST" class="space-y-8">
+            {% csrf_token %}
+            
+            <!-- Teaching Quality -->
+            <div>
+                <label class="block text-lg font-semibold mb-3">Teaching Quality</label>
+                <div class="flex items-center gap-4">
+                    {% for i in "12345" %}
+                    <label class="cursor-pointer">
+                        <input type="radio" 
+                               name="teaching_quality" 
+                               value="{{ forloop.counter }}" 
+                               class="hidden peer"
+                               {% if existing_rating and existing_rating.teaching_quality == forloop.counter %}checked{% endif %}
+                               required>
+                        <svg class="w-10 h-10 text-gray-600 peer-checked:text-yellow-500 hover:text-yellow-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Course Content -->
+            <div>
+                <label class="block text-lg font-semibold mb-3">Course Content</label>
+                <div class="flex items-center gap-4">
+                    {% for i in "12345" %}
+                    <label class="cursor-pointer">
+                        <input type="radio" 
+                               name="course_content" 
+                               value="{{ forloop.counter }}" 
+                               class="hidden peer"
+                               {% if existing_rating and existing_rating.course_content == forloop.counter %}checked{% endif %}
+                               required>
+                        <svg class="w-10 h-10 text-gray-600 peer-checked:text-yellow-500 hover:text-yellow-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Communication -->
+            <div>
+                <label class="block text-lg font-semibold mb-3">Communication</label>
+                <div class="flex items-center gap-4">
+                    {% for i in "12345" %}
+                    <label class="cursor-pointer">
+                        <input type="radio" 
+                               name="communication" 
+                               value="{{ forloop.counter }}" 
+                               class="hidden peer"
+                               {% if existing_rating and existing_rating.communication == forloop.counter %}checked{% endif %}
+                               required>
+                        <svg class="w-10 h-10 text-gray-600 peer-checked:text-yellow-500 hover:text-yellow-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Helpfulness -->
+            <div>
+                <label class="block text-lg font-semibold mb-3">Helpfulness</label>
+                <div class="flex items-center gap-4">
+                    {% for i in "12345" %}
+                    <label class="cursor-pointer">
+                        <input type="radio" 
+                               name="helpfulness" 
+                               value="{{ forloop.counter }}" 
+                               class="hidden peer"
+                               {% if existing_rating and existing_rating.helpfulness == forloop.counter %}checked{% endif %}
+                               required>
+                        <svg class="w-10 h-10 text-gray-600 peer-checked:text-yellow-500 hover:text-yellow-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Punctuality -->
+            <div>
+                <label class="block text-lg font-semibold mb-3">Punctuality</label>
+                <div class="flex items-center gap-4">
+                    {% for i in "12345" %}
+                    <label class="cursor-pointer">
+                        <input type="radio" 
+                               name="punctuality" 
+                               value="{{ forloop.counter }}" 
+                               class="hidden peer"
+                               {% if existing_rating and existing_rating.punctuality == forloop.counter %}checked{% endif %}
+                               required>
+                        <svg class="w-10 h-10 text-gray-600 peer-checked:text-yellow-500 hover:text-yellow-400 transition" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
+                        </svg>
+                    </label>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Comment -->
+            <div>
+                <label for="comment" class="block text-lg font-semibold mb-3">Additional Comments (Optional)</label>
+                <textarea name="comment" 
+                          id="comment" 
+                          rows="4"
+                          class="w-full px-4 py-3 bg-dark border border-dark rounded-lg focus:outline-none focus:border-blue-600 transition resize-none"
+                          placeholder="Share your experience with this teacher...">{% if existing_rating %}{{ existing_rating.comment }}{% endif %}</textarea>
+            </div>
+            
+            <div class="flex gap-4">
+                <button type="submit" 
+                        class="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 rounded-lg transition">
+                    {% if existing_rating %}Update Rating{% else %}Submit Rating{% endif %}
+                </button>
+                <a href="{% url 'dashboard' %}" 
+                   class="flex-1 bg-dark border border-dark hover:bg-dark-hover text-white font-semibold py-3 rounded-lg transition text-center">
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
